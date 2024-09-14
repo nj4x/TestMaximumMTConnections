@@ -32,7 +32,10 @@ namespace TestMaximumMTConnections
                     flowLayoutPanelProgress.Controls.Add(tb);
                 }
                 MTRunner.Instance.Start(() => {
-                    buttonStart.Text = "Start";
+                    buttonStart.Invoke((MethodInvoker)delegate
+                    {
+                        buttonStart.Text = "Start";
+                    });
                 });
             }
             else

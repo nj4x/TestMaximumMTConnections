@@ -43,15 +43,15 @@ namespace TestMaximumMTConnections
                 {
                     if (_gui.radioButtonMT4.Checked)
                     {
-                        _gui.textBoxBroker.Text = "52.187.40.104:1945";
-                        _gui.textBoxAccountNo.Text = "2134645758";
-                        _gui.textBoxPassword.Text = "hirc2dz";
+                        _gui.textBoxBroker.Text = "212.161.8.45:443";
+                        _gui.textBoxAccountNo.Text = "22216225";
+                        _gui.textBoxPassword.Text = "@5nTdsdtc1M}";
                     }
                     else
                     {
-                        _gui.textBoxBroker.Text = "51.77.231.41:1960";
-                        _gui.textBoxAccountNo.Text = "1343143";
-                        _gui.textBoxPassword.Text = "m70eba2F";
+                        _gui.textBoxBroker.Text = "142.215.208.236:1950";
+                        _gui.textBoxAccountNo.Text = "5030054070";
+                        _gui.textBoxPassword.Text = "Ih+qBoJ1";
                     }
                 };
                 //

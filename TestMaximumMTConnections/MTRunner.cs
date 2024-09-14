@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using nj4x;
 using nj4x.Metatrader;
 using Color = System.Drawing.Color;
@@ -51,55 +52,75 @@ namespace TestMaximumMTConnections
             Configs.Gui.textBoxProgress.Text = "Starting...";
             _task = Task.Run(() =>
             {
-                //
                 var numTerms = Configs.NumTerms;
                 var progressBar = Configs.Gui.progressBar;
                 var fPanel = Configs.Gui.flowLayoutPanelProgress;
                 var txtProgress = Configs.Gui.textBoxProgress;
-                progressBar.Minimum = 0;
-                progressBar.Maximum = numTerms;
-                progressBar.Step = 1;
+                progressBar.Invoke((MethodInvoker)delegate
+                {
+                    progressBar.Minimum = 0;
+                    progressBar.Maximum = numTerms;
+                    progressBar.Step = 1;
+                });
                 List<string> symbols = null;
                 for (int i = 0; i < numTerms && _isRunning; i++)
                 {
                     var connControl = fPanel.Controls[i];
-                    connControl.BackColor = Color.Yellow;
                     var s = new Strategy() {IsReconnect = false};
                     _terminals.Add(s);
                     for (int retry = 0; retry < 3 && _isRunning; retry++)
                     {
                         try
                         {
-                            txtProgress.Text = $"Connecting terminal #{i + 1} (retry {retry + 1})";
+                            txtProgress.Invoke((MethodInvoker)delegate
+                            {
+                                connControl.BackColor = Color.Yellow;
+                                txtProgress.Text = $"Connecting terminal #{i + 1} (retry {retry + 1})";
+                            });
                             //
                             s.Connect(Configs.TsHost, Configs.TsPort,
                                 new Broker(Configs.IsMT5 ? $"5*{Configs.Broker}" : Configs.Broker),
                                 $"{Configs.Account}@Term No {(i + 1):D3}",
                                 // "<accNo>@<dirSuffix>" format instructs TS to create separate directory for each terminal
                                 Configs.Password);
-                            connControl.BackColor = Color.Blue;
+                            connControl.Invoke((MethodInvoker)delegate
+                            {
+                                connControl.BackColor = Color.Blue;
+                            });
                             symbols = symbols ?? s.Symbols;
                             foreach (var symbol in symbols)
                             {
                                 s.SymbolSelect(symbol, false); // hide from market watch to minimize traffic/CPU usage
                             }
-                            connControl.BackColor = Color.Green;
                             //
-                            txtProgress.Text = $"Terminal #{i + 1} has been connected.";
+                            txtProgress.Invoke((MethodInvoker)delegate
+                            {
+                                connControl.BackColor = Color.Green;
+                                txtProgress.Text = $"Terminal #{i + 1} has been connected.";
+                            });
                             break;
                         }
                         catch (Exception)
                         {
-                            connControl.BackColor = Color.Red;
+                            connControl.Invoke((MethodInvoker)delegate
+                            {
+                                connControl.BackColor = Color.Red;
+                            });
                         }
                     }
                     //
-                    progressBar.PerformStep();
+                    progressBar.Invoke((MethodInvoker)delegate
+                    {
+                        progressBar.PerformStep();
+                    });
                 }
                 //
                 if (_isRunning)
                 {
-                    txtProgress.Text = "All done!";
+                    txtProgress.Invoke((MethodInvoker)delegate
+                    {
+                        txtProgress.Text = "All done!";
+                    });
                     _isRunning = false;
                     onFinished?.Invoke();
                 }
